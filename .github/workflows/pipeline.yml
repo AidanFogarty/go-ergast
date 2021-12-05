@@ -23,8 +23,5 @@ jobs:
         with:
           version: "latest"
 
-      - name: Build
-        run: make build
-
       - name: Test
         run: make test
