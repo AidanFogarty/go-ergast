@@ -16,13 +16,13 @@ func (ergast *Ergast) Laps(ctx context.Context, year int, round string) ([]Lap, 
 
 	// Golang Do While Loop
 	for ok := true; ok; ok = rowsObtained < totalRows {
-		results, err := ergast.doAction(ctx, url, rowsObtained, defaultLimit)
+		results, err := ergast.doAction(ctx, url, rowsObtained, maxLimit)
 		if err != nil {
 			return nil, err
 		}
 
 		totalRows = results.Total
-		rowsObtained += defaultLimit
+		rowsObtained += maxLimit
 
 		laps = append(laps, results.RaceTable.Races[0].Laps...)
 	}
@@ -39,9 +39,8 @@ func mergeLaps(laps []Lap) []Lap {
 	for _, lap := range laps {
 
 		if val, ok := seen[lap.Number]; ok {
-			merged := append(val.Timing, lap.Timing...)
 
-			newLap := Lap{val.Number, merged}
+			newLap := Lap{val.Number, append(val.Timing, lap.Timing...)}
 			seen[lap.Number] = newLap
 		} else {
 			seen[lap.Number] = lap

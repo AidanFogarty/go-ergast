@@ -13,7 +13,8 @@ import (
 const (
 	baseURL       = "https://ergast.com/api/f1"
 	defaultOffset = 0
-	defaultLimit  = 1000
+	defaultLimit  = 30
+	maxLimit      = 1000
 )
 
 type MRData struct {
