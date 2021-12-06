@@ -196,7 +196,7 @@ func TestErgast_ConstructorStandings(t *testing.T) {
 			testutil.Equals(t, test.expectedErr, err)
 
 			if (err != nil) != test.wantErr {
-				t.Errorf("Ergast.DriverStandings() error = %v, wantErr %v", err, test.wantErr)
+				t.Errorf("Ergast.ConstructorStandings() error = %v, wantErr %v", err, test.wantErr)
 			}
 		})
 	}
