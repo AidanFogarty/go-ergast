@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"errors"
 	"fmt"
 )
 
@@ -13,5 +14,10 @@ func (ergast *Ergast) DriverStandings(ctx context.Context, year int) ([]DriverSt
 	if err != nil {
 		return nil, err
 	}
+
+	if len(driverStandings.StandingsTable.DriverStandings) == 0 {
+		return nil, errors.New("no races returned for season provided")
+	}
+
 	return driverStandings.StandingsTable.DriverStandings, nil
 }

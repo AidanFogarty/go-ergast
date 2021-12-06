@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"errors"
 	"testing"
 
 	"github.com/AidanFogarty/go-ergast/pkg/testutil"
@@ -44,6 +45,14 @@ const (
 		</StandingsTable>
 	</MRData>
 	`
+	noDriverStandingsAvailableRespXML = `
+	<?xml version="1.0" encoding="utf-8"?>
+	<?xml-stylesheet type="text/xsl" href="/schemas/mrd-1.4.xsl"?>
+	<MRData xmlns="http://ergast.com/mrd/1.4" series="f1" url="http://ergast.com/api/f1/1900/driverstandings" limit="30" offset="0" total="0">
+		<StandingsTable season="1900">
+		</StandingsTable>
+	</MRData>
+	`
 )
 
 func TestErgast_DriverStandings(t *testing.T) {
@@ -52,16 +61,27 @@ func TestErgast_DriverStandings(t *testing.T) {
 		year int
 	}
 	tests := []struct {
-		name     string
-		args     args
-		response string
-		want     []DriverStanding
-		wantErr  bool
+		name           string
+		args           args
+		response       string
+		wantErr        bool
+		expectedErr    error
+		expectedLength int
 	}{
 		{
-			name:     "Successful Driver Standings Response",
-			response: successDrivingStandingsRespXML,
-			args:     args{context.TODO(), 2021},
+			name:           "Successful Driver Standings Response",
+			response:       successDrivingStandingsRespXML,
+			args:           args{context.TODO(), 2021},
+			wantErr:        false,
+			expectedLength: 2,
+		},
+		{
+			name:           "No Driver Standings Response returns Error",
+			response:       noDriverStandingsAvailableRespXML,
+			args:           args{context.TODO(), 1900},
+			wantErr:        true,
+			expectedErr:    errors.New("no races returned for season provided"),
+			expectedLength: 0,
 		},
 	}
 	for _, test := range tests {
@@ -73,8 +93,14 @@ func TestErgast_DriverStandings(t *testing.T) {
 				HTTPClient: srv.Client(),
 			}
 
-			_, err := ergast.DriverStandings(test.args.ctx, test.args.year)
-			testutil.Ok(t, err)
+			standings, err := ergast.DriverStandings(test.args.ctx, test.args.year)
+
+			testutil.Equals(t, test.expectedLength, len(standings))
+			testutil.Equals(t, test.expectedErr, err)
+
+			if (err != nil) != test.wantErr {
+				t.Errorf("Ergast.DriverStandings() error = %v, wantErr %v", err, test.wantErr)
+			}
 		})
 	}
 }
