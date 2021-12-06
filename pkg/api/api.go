@@ -135,7 +135,7 @@ func (ergast *Ergast) doAction(ctx context.Context, endpoint string, offset int,
 	defer resp.Body.Close() //nolint
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("an error occured, status code: %d", resp.StatusCode)
+		return nil, fmt.Errorf("an error occurred, status code: %d", resp.StatusCode)
 	}
 
 	data, err := ioutil.ReadAll(resp.Body)
