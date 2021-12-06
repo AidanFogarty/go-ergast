@@ -32,8 +32,9 @@ type RaceTable struct {
 }
 
 type StandingsTable struct {
-	Season          string           `xml:"season,attr"`
-	DriverStandings []DriverStanding `xml:"StandingsList>DriverStanding"`
+	Season               string                `xml:"season,attr"`
+	DriverStandings      []DriverStanding      `xml:"StandingsList>DriverStanding"`
+	ConstructorStandings []ConstructorStanding `xml:"StandingsList>ConstructorStanding"`
 }
 
 type Race struct {
@@ -87,6 +88,13 @@ type DriverStanding struct {
 	Points      string      `xml:"points,attr"`
 	Wins        string      `xml:"wins,attr"`
 	Driver      Driver      `xml:"Driver"`
+	Constructor Constructor `xml:"Constructor"`
+}
+
+type ConstructorStanding struct {
+	Position    string      `xml:"position,attr"`
+	Points      string      `xml:"points,attr"`
+	Wins        string      `xml:"wins,attr"`
 	Constructor Constructor `xml:"Constructor"`
 }
 
