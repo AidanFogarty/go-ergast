@@ -38,15 +38,16 @@ type StandingsTable struct {
 }
 
 type Race struct {
-	Season   string   `xml:"season,attr"`
-	Round    string   `xml:"round,attr"`
-	URL      string   `xml:"url,attr"`
-	RaceName string   `xml:"RaceName"`
-	Circuit  Circuit  `xml:"Circuit"`
-	Date     string   `xml:"Date"`
-	Time     string   `xml:"Time"`
-	Results  []Result `xml:"ResultsList>Result"`
-	Laps     []Lap    `xml:"LapsList>Lap"`
+	Season           string             `xml:"season,attr"`
+	Round            string             `xml:"round,attr"`
+	URL              string             `xml:"url,attr"`
+	RaceName         string             `xml:"RaceName"`
+	Circuit          Circuit            `xml:"Circuit"`
+	Date             string             `xml:"Date"`
+	Time             string             `xml:"Time"`
+	Results          []Result           `xml:"ResultsList>Result"`
+	Laps             []Lap              `xml:"LapsList>Lap"`
+	QualifyingResult []QualifyingResult `xml:"QualifyingList>QualifyingResult"`
 }
 
 type Lap struct {
@@ -114,6 +115,16 @@ type Constructor struct {
 	URL           string `xml:"url,attr"`
 	Name          string `xml:"Name"`
 	Nationality   string `xml:"Nationality"`
+}
+
+type QualifyingResult struct {
+	Number      string      `xml:"number,attr"`
+	Position    string      `xml:"position,attr"`
+	Driver      Driver      `xml:"Driver"`
+	Constructor Constructor `xml:"Constructor"`
+	Q1          string      `xml:"Q1"`
+	Q2          string      `xml:"Q2"`
+	Q3          string      `xml:"Q3"`
 }
 
 // Ergast represents the Ergast Developer API.
