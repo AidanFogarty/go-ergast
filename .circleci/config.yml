@@ -10,10 +10,12 @@ jobs:
       tag: '1.16'
     steps:
       - checkout
+      - restore_cache: # restores saved cache if no changes are detected since last run
+          keys:
+            - go-mod-v4-{{ checksum "go.sum" }}
       - go/install
       - go/load-cache
       - go/mod-download-cached
-      - go/save-cache
       - go/test:
           covermode: atomic
           failfast: true
