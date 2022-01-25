@@ -10,7 +10,7 @@ jobs:
       tag: '1.16'
     steps:
       - checkout
-      - go/load-cache
+      - go/install
       - go/mod-download
       - go/save-cache
       - go/test:
