@@ -11,7 +11,8 @@ jobs:
     steps:
       - checkout
       - go/install
-      - go/mod-download
+      - go/load-cache
+      - go/mod-download-cached
       - go/save-cache
       - go/test:
           covermode: atomic
