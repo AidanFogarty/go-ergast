@@ -1,0 +1,39 @@
+version: 2.1
+
+orbs:
+  go: circleci/go@1.7.0
+
+jobs:
+  build:
+    executor:
+      name: go/default
+      tag: '1.16'
+    steps:
+      - checkout
+      - go/load-cache
+      - go/mod-download
+      - go/save-cache
+
+workflows:
+  main:
+    jobs:
+      - build
+
+# jobs: 
+#   build: 
+#     docker: 
+#       - image: circleci/golang:1.16
+#         auth:
+#           username: mydockerhub-user
+#           password: $DOCKERHUB_PASSWORD
+    
+#     # environment: # environment variables for the build itself
+#     #   TEST_RESULTS: /tmp/test-results # path to where test results will be saved
+
+#     # steps: # steps that comprise the `build` job
+#     #   - checkout # check out source code to working directory
+#     #   - run: mkdir -p $TEST_RESULTS # create the test results directory
+
+#     #   - restore_cache: # restores saved cache if no changes are detected since last run
+#     #       keys:
+#     #         - go-mod-v4-{{ checksum "go.sum" }}
