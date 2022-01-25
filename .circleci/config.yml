@@ -21,6 +21,8 @@ jobs:
           covermode: atomic
           failfast: true
           race: true
+          parallel: 2
+          verbose: true
 
 workflows:
   main:
