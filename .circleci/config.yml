@@ -17,7 +17,6 @@ jobs:
       - go/install
       - go/load-cache
       - go/mod-download-cached
-      - golangci-lint/lint
       - go/test:
           covermode: atomic
           failfast: true
@@ -26,6 +25,7 @@ jobs:
 workflows:
   main:
     jobs:
+      - golangci-lint/lint
       - build
 
 # jobs: 
