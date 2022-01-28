@@ -26,21 +26,6 @@ jobs:
           parallel: "2"
           verbose: true
   
-# Build Windows Binary
-  build-windows:
-    executor:
-      name: win/default 
-      size: "medium"
-    steps:
-      - checkout
-      - run:
-         command: go build -o circleci
-         shell: bash --login -eo pipefail
-      - store_artifacts:
-          path: circleci
-          destination: circleci
-
-  
   # Static security testing - GoLang
   security-sast:
     docker:
@@ -60,14 +45,10 @@ workflows:
       - security-sast:
           requires:
             - golangci-lint/lint
-      
+    
       - build:
           matrix:
             parameters:
               gover: ["1.11", "1.12", "1.13", "1.14"]
           requires:
             - security-sast
-      
-      - build-windows:
-          requires:
-            - build
