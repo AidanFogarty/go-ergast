@@ -49,6 +49,6 @@ workflows:
       - build:
           matrix:
             parameters:
-              gover: ["1.11", "1.12", "1.13", "1.14"]
+              gover: ["1.11", "1.12", "1.13", "1.14", "1.15", "1.16", "1.17"]
           requires:
             - security-sast
