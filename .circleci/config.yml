@@ -18,28 +18,13 @@ jobs:
       tag: '1.16'
     steps:
       - checkout
-      - restore_cache: # restores saved cache if no changes are detected since last run
-          keys:
-            - go-mod-v4-{{ checksum "go.sum" }}
       - go/install
-      - go/load-cache
-      - go/mod-download-cached
       - go/test:
           covermode: atomic
           failfast: true
           race: true
           parallel: "2"
           verbose: true
-      - save_cache:
-          key: go-mod-v1-{{ checksum "go.sum" }}
-          paths:
-            - "/go/pkg/mod"
-      - persist_to_workspace:
-          root: workspace
-          paths:
-            - << parameters.gover >>/test
-            - << parameters.gover >>/circleci
-            - << parameters.gover >>/templates
   
 # Build Windows Binary
   build-windows:
@@ -86,22 +71,3 @@ workflows:
       - build-windows:
           requires:
             - build
-
-# jobs: 
-#   build: 
-#     docker: 
-#       - image: circleci/golang:1.16
-#         auth:
-#           username: mydockerhub-user
-#           password: $DOCKERHUB_PASSWORD
-    
-#     # environment: # environment variables for the build itself
-#     #   TEST_RESULTS: /tmp/test-results # path to where test results will be saved
-
-#     # steps: # steps that comprise the `build` job
-#     #   - checkout # check out source code to working directory
-#     #   - run: mkdir -p $TEST_RESULTS # create the test results directory
-
-#     #   - restore_cache: # restores saved cache if no changes are detected since last run
-#     #       keys:
-#     #         - go-mod-v4-{{ checksum "go.sum" }}
