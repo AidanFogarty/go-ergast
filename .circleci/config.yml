@@ -6,6 +6,12 @@ orbs:
 
 jobs:
   build:
+    parameters:
+      gover: 
+        description: The version of the Go compiler to use.
+        type: string
+    docker:
+      - image: circleci/golang:<< parameters.gover >>
     executor:
       name: go/default
       tag: '1.16'
@@ -23,12 +29,74 @@ jobs:
           race: true
           parallel: "2"
           verbose: true
+      - save_cache:
+          key: go-mod-v1-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+      - persist_to_workspace:
+          root: workspace
+          paths:
+            - << parameters.gover >>/test
+            - << parameters.gover >>/circleci
+            - << parameters.gover >>/templates
+  
+# Build Windows Binary
+  build-windows:
+    executor:
+      name: win/default 
+      size: "medium"
+    steps:
+      - checkout
+      - run:
+         command: go build -o circleci
+         shell: bash --login -eo pipefail
+      - store_artifacts:
+          path: circleci
+          destination: circleci
+
+  
+  # Static security testing - GoLang
+  security-sast:
+    docker:
+      - image: securego/gosec:latest
+    steps:
+      - checkout
+      - run: gosec -fmt junit-xml -out junit.xml ./...
+      - store_test_results:
+          path: .
 
 workflows:
   main:
     jobs:
       - golangci-lint/lint
       - build
+
+    jobs:
+      - golangci-lint/lint
+      
+      # Static application security testing
+      - security-sast:
+          requires:
+            - golangci-lint/lint
+      
+      - build:
+          matrix:
+            parameters:
+              gover: ["1.11", "1.12", "1.13", "1.14"]
+          requires:
+            - security-sast
+      
+      - build-windows
+          requires:
+            - build     
+      
+      # Run unit tests 
+      - test:
+          matrix:
+            parameters:
+              gover: ["1.11", "1.12", "1.13"]
+          requires:
+            - build-windows
 
 # jobs: 
 #   build: 
