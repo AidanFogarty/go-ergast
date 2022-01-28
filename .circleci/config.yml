@@ -3,6 +3,7 @@ version: 2.1
 orbs:
   go: circleci/go@1.7.0
   golangci-lint: timakin/golangci-lint@0.1.1
+  win: circleci/windows@2.2.0 
 
 jobs:
   build:
@@ -69,10 +70,6 @@ workflows:
   main:
     jobs:
       - golangci-lint/lint
-      - build
-
-    jobs:
-      - golangci-lint/lint
       
       # Static application security testing
       - security-sast:
@@ -86,17 +83,9 @@ workflows:
           requires:
             - security-sast
       
-      - build-windows
+      - build-windows:
           requires:
-            - build     
-      
-      # Run unit tests 
-      - test:
-          matrix:
-            parameters:
-              gover: ["1.11", "1.12", "1.13"]
-          requires:
-            - build-windows
+            - build
 
 # jobs: 
 #   build: 
