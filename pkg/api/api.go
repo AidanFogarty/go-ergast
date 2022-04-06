@@ -68,6 +68,7 @@ type Result struct {
 	Points      string      `xml:"points,attr"`
 	Driver      Driver      `xml:"Driver"`
 	Constructor Constructor `xml:"Constructor"`
+	FastestLap  FastestLap  `xml:"FastestLap"`
 }
 
 type Circuit struct {
@@ -115,6 +116,13 @@ type Constructor struct {
 	URL           string `xml:"url,attr"`
 	Name          string `xml:"Name"`
 	Nationality   string `xml:"Nationality"`
+}
+
+type FastestLap struct {
+	Rank     string  `xml:"rank,attr"`
+	LapNum   string  `xml:"lap,attr"`
+	Time     string  `xml:"Time"`
+	AvgSpeed float64 `xml:"AverageSpeed"`
 }
 
 type QualifyingResult struct {
