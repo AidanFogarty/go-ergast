@@ -1,0 +1,54 @@
+version: 2.1
+
+orbs:
+  go: circleci/go@1.7.0
+  golangci-lint: timakin/golangci-lint@0.1.1
+  win: circleci/windows@2.2.0 
+
+jobs:
+  build:
+    parameters:
+      gover: 
+        description: The version of the Go compiler to use.
+        type: string
+    docker:
+      - image: circleci/golang:<< parameters.gover >>
+    executor:
+      name: go/default
+      tag: '1.16'
+    steps:
+      - checkout
+      - go/install
+      - go/test:
+          covermode: atomic
+          failfast: true
+          race: true
+          parallel: "2"
+          verbose: true
+  
+  # Static security testing - GoLang
+  security-sast:
+    docker:
+      - image: securego/gosec:latest
+    steps:
+      - checkout
+      - run: gosec -fmt junit-xml -out junit.xml ./...
+      - store_test_results:
+          path: .
+
+workflows:
+  main:
+    jobs:
+      - golangci-lint/lint
+      
+      # Static application security testing
+      - security-sast:
+          requires:
+            - golangci-lint/lint
+    
+      - build:
+          matrix:
+            parameters:
+              gover: ["1.11", "1.12", "1.13", "1.14", "1.15", "1.16", "1.17"]
+          requires:
+            - security-sast
